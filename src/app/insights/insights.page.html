@@ -62,6 +62,80 @@
       </div>
     </div>
 
+    <!-- Spending Insights -->
+    <div class="insights-section modern-card slide-up">
+      <h3 class="insights-title">Spending Insights</h3>
+      
+      <!-- Week Comparison -->
+      <div *ngIf="weekComparison" class="insight-card">
+        <div class="card-header">
+          <ion-icon name="analytics" class="insight-icon"></ion-icon>
+          <h4>This Week vs Last Week</h4>
+        </div>
+        <div class="card-content">
+          <div class="comparison-item">
+            <span class="label">This Week:</span>
+            <span class="value">{{ formatAmount(weekComparison.current) }}</span>
+          </div>
+          <div class="comparison-item">
+            <span class="label">Last Week:</span>
+            <span class="value">{{ formatAmount(weekComparison.previous) }}</span>
+          </div>
+          <div class="comparison-item trend">
+            <ion-icon [name]="getTrendIcon(weekComparison.trend)" [color]="getTrendColor(weekComparison.trend)"></ion-icon>
+            <span [class]="getTrendColor(weekComparison.trend)">
+              {{ formatPercentage(weekComparison.changePercent) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Spending Tags -->
+      <div *ngIf="topSpendingTags.length > 0" class="insight-card">
+        <div class="card-header">
+          <ion-icon name="pricetag" class="insight-icon"></ion-icon>
+          <h4>Top Spending Categories</h4>
+        </div>
+        <div class="card-content">
+          <div *ngFor="let tag of topSpendingTags" class="tag-item">
+            <span class="tag-name">{{ tag.tag }}</span>
+            <div class="tag-details">
+              <span class="tag-amount">{{ formatAmount(tag.amount) }}</span>
+              <span class="tag-percentage">{{ tag.percentage.toFixed(1) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spending Streak -->
+      <div class="insight-card">
+        <div class="card-header">
+          <ion-icon name="flame" class="insight-icon"></ion-icon>
+          <h4>Spending Streak</h4>
+        </div>
+        <div class="card-content">
+          <div class="streak-display">
+            <span class="streak-number">{{ spendingStreak }}</span>
+            <span class="streak-label">days with entries</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anomalies -->
+      <div *ngIf="anomalies.length > 0" class="insight-card anomaly-card">
+        <div class="card-header">
+          <ion-icon name="warning" class="insight-icon"></ion-icon>
+          <h4>Spending Alerts</h4>
+        </div>
+        <div class="card-content">
+          <div *ngFor="let anomaly of anomalies" class="anomaly-item">
+            <ion-icon name="alert-circle" color="warning"></ion-icon>
+            <span class="anomaly-message">{{ anomaly.message }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Summary Stats -->
     <div class="stats-section modern-card slide-up">
       <h3 class="stats-title">Summary</h3>

@@ -71,6 +71,21 @@
     color: white;
   }
   
+  &.lock-icon {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    color: white;
+  }
+  
+  &.budget-icon {
+    background: linear-gradient(135deg, #00D4AA, #4ECDC4);
+    color: white;
+  }
+  
+  &.sync-icon {
+    background: linear-gradient(135deg, #4C7CF3, #A66EFC);
+    color: white;
+  }
+  
   &.backup-icon {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -79,6 +94,102 @@
 
 .card-title-section {
   flex: 1;
+}
+
+.budget-settings {
+  margin-top: 16px;
+  
+  .range-label {
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 8px;
+  }
+}
+
+.budget-progress {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .progress-footer {
+    margin-top: 8px;
+    text-align: center;
+    
+    .under-budget {
+      color: var(--ion-color-success);
+      font-weight: 600;
+    }
+    
+    .over-budget {
+      color: var(--ion-color-danger);
+      font-weight: 600;
+    }
+  }
+}
+
+.lock-settings {
+  margin-top: 16px;
+  
+  .pin-setup {
+    margin-bottom: 20px;
+  }
+  
+  .biometric-settings {
+    margin-bottom: 20px;
+  }
+  
+  .lock-status {
+    ion-item {
+      --background: transparent;
+      --border-color: transparent;
+      
+      h3 {
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+      }
+      
+      p {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+        margin: 0 0 2px 0;
+      }
+    }
+  }
+}
+
+.sync-info {
+  margin-top: 16px;
+  
+  ion-item {
+    --background: transparent;
+    --border-color: transparent;
+    
+    h3 {
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+    }
+    
+    p {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin: 0;
+    }
+  }
 }
 
 .card-title {

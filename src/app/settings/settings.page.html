@@ -166,11 +166,194 @@
       </div>
     </div>
 
+    <!-- App Lock -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon lock-icon">
+          <ion-icon name="lock-closed"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">App Lock</h2>
+          <p class="card-subtitle">Secure your financial data</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label>Enable App Lock</ion-label>
+          <ion-toggle [(ngModel)]="lockSettings.enabled" (ionChange)="lockSettings.enabled ? null : disableAppLock()"></ion-toggle>
+        </ion-item>
+        
+        <div *ngIf="lockSettings.enabled" class="lock-settings">
+          <!-- PIN Setup -->
+          <div *ngIf="!lockSettings.enabled" class="pin-setup">
+            <ion-item class="modern-input">
+              <ion-label position="stacked">Set PIN (4-6 digits)</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="newPin" 
+                placeholder="Enter PIN"
+                maxlength="6">
+              </ion-input>
+            </ion-item>
+            
+            <ion-item class="modern-input">
+              <ion-label position="stacked">Confirm PIN</ion-label>
+              <ion-input 
+                type="password" 
+                [(ngModel)]="confirmPin" 
+                placeholder="Confirm PIN"
+                maxlength="6">
+              </ion-input>
+            </ion-item>
+            
+            <ion-button expand="block" class="gradient-button" (click)="setupPin()">
+              <ion-icon name="checkmark" slot="start"></ion-icon>
+              Setup PIN
+            </ion-button>
+          </div>
+          
+          <!-- Biometric Settings -->
+          <div *ngIf="lockSettings.biometricAvailable" class="biometric-settings">
+            <ion-item class="modern-input">
+              <ion-label>Enable Biometric Authentication</ion-label>
+              <ion-toggle [(ngModel)]="lockSettings.biometricEnabled" (ionChange)="toggleBiometric()"></ion-toggle>
+            </ion-item>
+          </div>
+          
+          <!-- Lock Status -->
+          <div *ngIf="lockSettings.enabled" class="lock-status">
+            <ion-item class="modern-input">
+              <ion-label>
+                <h3>Security Status</h3>
+                <p>PIN: {{ lockSettings.enabled ? 'Enabled' : 'Disabled' }}</p>
+                <p>Biometric: {{ lockSettings.biometricEnabled ? 'Enabled' : 'Disabled' }}</p>
+              </ion-label>
+            </ion-item>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Budget Settings -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon budget-icon">
+          <ion-icon name="cash"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Budget</h2>
+          <p class="card-subtitle">Track your spending limits</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label>Enable Budget</ion-label>
+          <ion-toggle [(ngModel)]="budget" (ionChange)="budget ? null : deleteBudget()"></ion-toggle>
+        </ion-item>
+        
+        <div *ngIf="budget" class="budget-settings">
+          <ion-item class="modern-input">
+            <ion-label position="stacked">Budget Period</ion-label>
+            <ion-select [(ngModel)]="budget.period" (ionChange)="saveBudget()">
+              <ion-select-option value="weekly">Weekly</ion-select-option>
+              <ion-select-option value="monthly">Monthly</ion-select-option>
+            </ion-select>
+          </ion-item>
+          
+          <ion-item class="modern-input">
+            <ion-label position="stacked">Budget Amount</ion-label>
+            <ion-input 
+              type="number" 
+              [(ngModel)]="budget.amount" 
+              (ionInput)="saveBudget()"
+              placeholder="Enter budget amount">
+            </ion-input>
+          </ion-item>
+          
+          <ion-item class="modern-input">
+            <ion-label position="stacked">Warning Threshold (%)</ion-label>
+            <ion-range 
+              min="60" 
+              max="100" 
+              step="5" 
+              [(ngModel)]="budget.warnAtPct" 
+              (ionChange)="saveBudget()">
+              <ion-label slot="start">60%</ion-label>
+              <ion-label slot="end">100%</ion-label>
+            </ion-range>
+            <ion-label class="range-label">{{ (budget.warnAtPct * 100).toFixed(0) }}%</ion-label>
+          </ion-item>
+          
+          <!-- Budget Progress -->
+          <div *ngIf="budgetSpending.budget > 0" class="budget-progress">
+            <div class="progress-header">
+              <span>Spent: {{ formatAmount(budgetSpending.spent) }}</span>
+              <span>Budget: {{ formatAmount(budgetSpending.budget) }}</span>
+            </div>
+            <ion-progress-bar 
+              [value]="budgetSpending.percentage / 100" 
+              [color]="budgetSpending.isOverBudget ? 'danger' : 'success'">
+            </ion-progress-bar>
+            <div class="progress-footer">
+              <span [class]="budgetSpending.isOverBudget ? 'over-budget' : 'under-budget'">
+                {{ budgetSpending.isOverBudget ? 
+                  'Over budget by ' + formatAmount(budgetSpending.remaining) : 
+                  formatAmount(budgetSpending.remaining) + ' remaining' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cloud Sync -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon sync-icon">
+          <ion-icon name="cloud-download"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Cloud Sync</h2>
+          <p class="card-subtitle">Sync your data across devices</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label>Enable Cloud Sync</ion-label>
+          <ion-toggle [(ngModel)]="syncStatus.enabled" (ionChange)="toggleCloudSync()"></ion-toggle>
+        </ion-item>
+        
+        <div *ngIf="syncStatus.enabled" class="sync-info">
+          <ion-item class="modern-input">
+            <ion-label>
+              <h3>Last Sync</h3>
+              <p>{{ formatLastSync(syncStatus.lastSync) }}</p>
+            </ion-label>
+          </ion-item>
+          
+          <ion-item class="modern-input">
+            <ion-label>
+              <h3>User ID</h3>
+              <p>{{ syncStatus.userId || 'Anonymous' }}</p>
+            </ion-label>
+          </ion-item>
+          
+          <ion-button expand="block" class="gradient-button" (click)="syncNow()" [disabled]="isSyncing">
+            <ion-icon name="refresh" slot="start"></ion-icon>
+            {{ isSyncing ? 'Syncing...' : 'Sync Now' }}
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
     <!-- Backup & Restore -->
     <div class="settings-card modern-card slide-up">
       <div class="card-header">
         <div class="card-icon backup-icon">
-          <ion-icon name="cloud-download"></ion-icon>
+          <ion-icon name="download"></ion-icon>
         </div>
         <div class="card-title-section">
           <h2 class="card-title">Backup & Restore</h2>

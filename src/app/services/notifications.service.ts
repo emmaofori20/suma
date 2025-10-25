@@ -109,4 +109,30 @@ export class NotificationsService {
       await this.cancelDailyReminder();
     }
   }
+
+  async scheduleBudgetWarning(notification: {
+    id: number;
+    title: string;
+    body: string;
+    schedule: { at: Date };
+  }) {
+    try {
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            id: notification.id,
+            title: notification.title,
+            body: notification.body,
+            schedule: notification.schedule,
+            sound: 'default',
+            attachments: [],
+            actionTypeId: '',
+            extra: null
+          }
+        ]
+      });
+    } catch (error) {
+      console.error('Error scheduling budget warning:', error);
+    }
+  }
 }

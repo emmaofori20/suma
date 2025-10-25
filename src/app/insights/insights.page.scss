@@ -76,6 +76,139 @@
   backdrop-filter: blur(10px);
 }
 
+/* Spending Insights */
+.insights-section {
+  margin-bottom: 24px;
+}
+
+.insights-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.insight-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    
+    .insight-icon {
+      font-size: 1.2rem;
+      margin-right: 8px;
+      color: var(--primary-blue);
+    }
+    
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+  }
+  
+  .card-content {
+    .comparison-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      .label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      
+      .value {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+      
+      &.trend {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        
+        ion-icon {
+          margin-right: 4px;
+        }
+      }
+    }
+    
+    .tag-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      .tag-name {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+      
+      .tag-details {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .tag-amount {
+          color: var(--text-primary);
+          font-weight: 600;
+        }
+        
+        .tag-percentage {
+          color: var(--text-secondary);
+          font-size: 0.8rem;
+        }
+      }
+    }
+    
+    .streak-display {
+      text-align: center;
+      
+      .streak-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-blue);
+        display: block;
+      }
+      
+      .streak-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+    }
+    
+    .anomaly-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      
+      ion-icon {
+        margin-right: 8px;
+        font-size: 1.1rem;
+      }
+      
+      .anomaly-message {
+        color: var(--text-primary);
+        font-size: 0.9rem;
+      }
+    }
+  }
+  
+  &.anomaly-card {
+    border-color: var(--ion-color-warning);
+    background: rgba(255, 193, 7, 0.1);
+  }
+}
+
 .stats-title {
   font-size: 1.3rem;
   font-weight: 600;

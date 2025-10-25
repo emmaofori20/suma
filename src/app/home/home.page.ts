@@ -67,7 +67,7 @@ import { addIcons } from 'ionicons';
 })
 export class HomePage implements OnInit {
   entries: Entry[] = [];
-  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00' };
+  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00', updatedAt: Date.now() };
   todayEntries: Entry[] = [];
   totalToday = 0;
   
@@ -120,15 +120,17 @@ export class HomePage implements OnInit {
       return;
     }
 
-    const entry: Entry = {
-      id: Date.now().toString(),
-      ts: Date.now(),
-      amount: this.newEntry.type === 'income' 
-        ? parseFloat(this.newEntry.amount) 
-        : -parseFloat(this.newEntry.amount),
-      note: this.newEntry.note,
-      tags: this.newEntry.tags
-    };
+      const entry: Entry = {
+        id: Date.now().toString(),
+        ts: Date.now(),
+        amount: this.newEntry.type === 'income'
+          ? parseFloat(this.newEntry.amount)
+          : -parseFloat(this.newEntry.amount),
+        note: this.newEntry.note,
+        tags: this.newEntry.tags,
+        updatedAt: Date.now(),
+        deleted: false
+      };
 
     await this.storageService.saveEntry(entry);
     await this.loadData();

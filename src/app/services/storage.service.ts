@@ -22,7 +22,20 @@ export class StorageService {
   async saveEntry(entry: Entry): Promise<void> {
     try {
       const entries = await this.getEntries();
-      entries.push(entry);
+      
+      // Add updatedAt if not present
+      if (!entry.updatedAt) {
+        entry.updatedAt = Date.now();
+      }
+      
+      // Update existing entry or add new one
+      const existingIndex = entries.findIndex(e => e.id === entry.id);
+      if (existingIndex >= 0) {
+        entries[existingIndex] = entry;
+      } else {
+        entries.push(entry);
+      }
+      
       await Preferences.set({
         key: this.ENTRIES_KEY,
         value: JSON.stringify(entries)
@@ -55,7 +68,8 @@ export class StorageService {
         weekStartsOn: 0, 
         theme: 'ocean',
         dailyReminder: false,
-        reminderTime: '20:00'
+        reminderTime: '20:00',
+        updatedAt: Date.now()
       };
     } catch (error) {
       console.error('Error getting settings:', error);
@@ -64,7 +78,8 @@ export class StorageService {
         weekStartsOn: 0, 
         theme: 'ocean',
         dailyReminder: false,
-        reminderTime: '20:00'
+        reminderTime: '20:00',
+        updatedAt: Date.now()
       };
     }
   }

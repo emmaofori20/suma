@@ -52,7 +52,7 @@ import { addIcons } from 'ionicons';
 export class HistoryPage implements OnInit {
   entries: Entry[] = [];
   filteredEntries: Entry[] = [];
-  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00' };
+  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00', updatedAt: Date.now() };
   
   filterType: 'all' | 'income' | 'expense' = 'all';
   filterPeriod: 'all' | 'week' | 'month' | 'year' = 'all';

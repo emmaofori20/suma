@@ -20,14 +20,16 @@ import {
   IonToggle,
   IonDatetime,
   IonDatetimeButton,
-  IonPopover
-} from '@ionic/angular/standalone';
+  IonPopover, IonProgressBar } from '@ionic/angular/standalone';
 import { arrowBack, save, download, notifications, checkmark, refresh, cloudDownload, colorPalette, informationCircle, cash, calendar } from 'ionicons/icons';
 import { StorageService } from '../services/storage.service';
-import { Settings, AppState } from '../models/entry.model';
+import { Settings, AppState, Budget } from '../models/entry.model';
 import { Router } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
 import { NotificationsService } from '../services/notifications.service';
+import { SyncService } from '../services/sync.service';
+import { BudgetService } from '../services/budget.service';
+import { AppLockService } from '../services/app-lock.service';
 import { addIcons } from 'ionicons';
 
 @Component({
@@ -35,7 +37,7 @@ import { addIcons } from 'ionicons';
   templateUrl: 'settings.page.html',
   styleUrls: ['settings.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonProgressBar, 
     CommonModule,
     FormsModule,
     IonContent,
@@ -58,8 +60,36 @@ import { addIcons } from 'ionicons';
 export class SettingsPage implements OnInit {
   @ViewChild('reminderPopover') reminderPopover!: IonPopover;
   
-  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00' };
-  originalSettings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00' };
+  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00', updatedAt: Date.now() };
+  originalSettings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00', updatedAt: Date.now() };
+  
+  syncStatus: {
+    enabled: boolean;
+    lastSync?: number;
+    userId?: string;
+  } = {
+    enabled: false,
+    lastSync: undefined,
+    userId: undefined
+  };
+  isSyncing = false;
+  
+  budget: Budget | null = null;
+  budgetSpending = {
+    spent: 0,
+    budget: 0,
+    remaining: 0,
+    percentage: 0,
+    isOverBudget: false
+  };
+  
+  lockSettings = {
+    enabled: false,
+    biometricEnabled: false,
+    biometricAvailable: false
+  };
+  newPin = '';
+  confirmPin = '';
     @ViewChild('fileInput', { static: false }) fileInput!: ElementRef<HTMLInputElement>;
 
   currencyOptions = [
@@ -91,7 +121,10 @@ export class SettingsPage implements OnInit {
     private storageService: StorageService,
     private router: Router,
     private themeService: ThemeService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private syncService: SyncService,
+    private budgetService: BudgetService,
+    private appLockService: AppLockService
   ) {
     addIcons({ arrowBack, save, download, notifications, checkmark, refresh, cloudDownload, colorPalette, informationCircle, calendar, cash });
   }
@@ -103,6 +136,12 @@ export class SettingsPage implements OnInit {
   async loadSettings() {
     this.settings = await this.storageService.getSettings();
     this.originalSettings = { ...this.settings };
+    this.syncStatus = await this.syncService.getSyncStatus();
+    this.budget = await this.budgetService.getBudget();
+    if (this.budget) {
+      this.budgetSpending = await this.budgetService.getCurrentPeriodSpending();
+    }
+    this.lockSettings = await this.appLockService.getLockSettings();
   }
 
   async saveSettings() {
@@ -129,7 +168,7 @@ export class SettingsPage implements OnInit {
   }
 
   async resetToDefaults() {
-    this.settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00' };
+    this.settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00', updatedAt: Date.now() };
   }
 
   async onThemeChange() {
@@ -227,6 +266,120 @@ triggerFileInput() {
     } catch (error) {
       console.error('Error importing JSON:', error);
       alert('Invalid backup file format');
+    }
+  }
+
+  async toggleCloudSync() {
+    try {
+      if (this.syncStatus.enabled) {
+        await this.syncService.disableSync();
+      } else {
+        await this.syncService.enableSync();
+      }
+      await this.loadSettings();
+    } catch (error) {
+      console.error('Error toggling cloud sync:', error);
+      alert('Failed to toggle cloud sync. Please try again.');
+    }
+  }
+
+  async syncNow() {
+    if (this.isSyncing) return;
+    
+    try {
+      this.isSyncing = true;
+      const result = await this.syncService.syncNow();
+      
+      let message = 'Sync completed successfully!';
+      if (result.entriesPushed > 0 || result.entriesPulled > 0) {
+        message += `\n\n• ${result.entriesPushed} entries pushed to cloud\n• ${result.entriesPulled} entries pulled from cloud`;
+      }
+      if (result.settingsSynced) {
+        message += '\n• Settings synchronized';
+      }
+      
+      alert(message);
+      await this.loadSettings();
+    } catch (error) {
+      console.error('Sync failed:', error);
+      alert('Sync failed. Please check your internet connection and try again.');
+    } finally {
+      this.isSyncing = false;
+    }
+  }
+
+  formatLastSync(lastSync?: number): string {
+    if (!lastSync) return 'Never';
+    const date = new Date(lastSync);
+    return date.toLocaleString();
+  }
+
+  async saveBudget() {
+    if (this.budget) {
+      await this.budgetService.setBudget(this.budget);
+      this.budgetSpending = await this.budgetService.getCurrentPeriodSpending();
+    }
+  }
+
+  async deleteBudget() {
+    this.budget = null;
+    const settings = await this.storageService.getSettings();
+    settings.budget = undefined;
+    settings.updatedAt = Date.now();
+    await this.storageService.saveSettings(settings);
+  }
+
+  formatAmount(amount: number): string {
+    return `${this.settings.currency}${amount.toFixed(2)}`;
+  }
+
+  async setupPin() {
+    if (this.newPin !== this.confirmPin) {
+      alert('PINs do not match. Please try again.');
+      return;
+    }
+    
+    if (this.newPin.length < 4 || this.newPin.length > 6) {
+      alert('PIN must be 4-6 digits.');
+      return;
+    }
+    
+    try {
+      await this.appLockService.enablePinLock(this.newPin);
+      this.newPin = '';
+      this.confirmPin = '';
+      await this.loadSettings();
+      alert('PIN lock enabled successfully!');
+    } catch (error) {
+      console.error('Failed to setup PIN:', error);
+      alert('Failed to setup PIN. Please try again.');
+    }
+  }
+
+  async toggleBiometric() {
+    try {
+      if (this.lockSettings.biometricEnabled) {
+        await this.appLockService.disableBiometric();
+      } else {
+        await this.appLockService.enableBiometric();
+      }
+      await this.loadSettings();
+    } catch (error) {
+      console.error('Failed to toggle biometric:', error);
+      alert('Failed to toggle biometric authentication. Please try again.');
+    }
+  }
+
+  async disableAppLock() {
+    if (confirm('Are you sure you want to disable app lock? This will remove all security settings.')) {
+      try {
+        await this.appLockService.disableLock();
+        await this.loadSettings();
+        alert('App lock disabled successfully.');
+      } catch (error) {
+        console.error('Failed to disable app lock:', error);
+        alert('Failed to disable app lock. Please try again.');
+      }
     }
   }
 }

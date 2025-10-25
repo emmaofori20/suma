@@ -25,6 +25,17 @@ import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { 
+  comparePeriods, 
+  topTags, 
+  streakDays, 
+  detectAnomalies, 
+  getWeekBoundaries, 
+  getMonthBoundaries,
+  PeriodComparison,
+  TopTag,
+  Anomaly
+} from '../utils/insights.util';
 
 @Component({
   selector: 'app-insights',
@@ -49,9 +60,15 @@ import { BaseChartDirective } from 'ng2-charts';
 })
 export class InsightsPage implements OnInit {
   entries: Entry[] = [];
-  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00' };
+  settings: Settings = { currency: '$', weekStartsOn: 0, theme: 'ocean', dailyReminder: false, reminderTime: '20:00', updatedAt: Date.now() };
   
   filterPeriod: 'week' | 'month' | 'all' = 'week';
+  
+  // New insights data
+  weekComparison: PeriodComparison | null = null;
+  topSpendingTags: TopTag[] = [];
+  spendingStreak: number = 0;
+  anomalies: Anomaly[] = [];
   
   // Bar Chart - Net Flow
   public barChartOptions: ChartConfiguration['options'] = {
@@ -136,6 +153,7 @@ export class InsightsPage implements OnInit {
     this.entries = await this.storageService.getEntries();
     this.settings = await this.storageService.getSettings();
     this.updateCharts();
+    this.calculateInsights();
   }
 
   onFilterPeriodChange() {
@@ -277,5 +295,86 @@ export class InsightsPage implements OnInit {
 
   getNetTotal(): number {
     return this.getTotalIncome() - this.getTotalExpenses();
+  }
+
+  calculateInsights() {
+    try {
+      // Calculate week comparison
+      this.calculateWeekComparison();
+      
+      // Calculate top spending tags
+      this.calculateTopSpendingTags();
+      
+      // Calculate spending streak
+      this.spendingStreak = streakDays(this.entries);
+      
+      // Detect anomalies
+      this.detectSpendingAnomalies();
+    } catch (error) {
+      console.error('Error calculating insights:', error);
+    }
+  }
+
+  private calculateWeekComparison() {
+    const now = Date.now();
+    const weekMs = 7 * 24 * 60 * 60 * 1000;
+    
+    // Current week
+    const currentWeekStart = now - weekMs;
+    const currentWeekEnd = now;
+    
+    // Previous week
+    const previousWeekStart = currentWeekStart - weekMs;
+    const previousWeekEnd = currentWeekStart;
+    
+    this.weekComparison = comparePeriods(
+      this.entries,
+      currentWeekStart,
+      currentWeekEnd,
+      previousWeekStart,
+      previousWeekEnd
+    );
+  }
+
+  private calculateTopSpendingTags() {
+    const now = Date.now();
+    const monthMs = 30 * 24 * 60 * 60 * 1000;
+    const monthStart = now - monthMs;
+    const monthEnd = now;
+    
+    this.topSpendingTags = topTags(this.entries, monthStart, monthEnd, 3);
+  }
+
+  private detectSpendingAnomalies() {
+    this.anomalies = [];
+    
+    // Check for anomalies in top spending tags
+    this.topSpendingTags.forEach(tag => {
+      const anomaly = detectAnomalies(this.entries, tag.tag, 4);
+      if (anomaly) {
+        this.anomalies.push(anomaly);
+      }
+    });
+  }
+
+  getTrendIcon(trend: 'up' | 'down' | 'same'): string {
+    switch (trend) {
+      case 'up': return 'trending-up';
+      case 'down': return 'trending-down';
+      default: return 'remove';
+    }
+  }
+
+  getTrendColor(trend: 'up' | 'down' | 'same'): string {
+    switch (trend) {
+      case 'up': return 'danger';
+      case 'down': return 'success';
+      default: return 'medium';
+    }
+  }
+
+  formatPercentage(percentage: number): string {
+    const sign = percentage >= 0 ? '+' : '';
+    return `${sign}${percentage.toFixed(1)}%`;
   }
 }
