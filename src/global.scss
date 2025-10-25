@@ -49,8 +49,9 @@
   
   /* Background Colors */
   --bg-gradient: linear-gradient(180deg, #1E1E2F, #121212);
-  --card-bg: #262638;
+  --card-bg: #1a1a2e;
   --card-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  --balance-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   
   /* Text Colors */
   --text-primary: #EDEDED;
@@ -245,16 +246,19 @@ ion-fab-button {
   --primary-blue: #4C7CF3;
   --secondary-violet: #A66EFC;
   --bg-gradient: linear-gradient(180deg, #1E1E2F, #121212);
+  --balance-card-bg: linear-gradient(135deg, #4C7CF3 0%, #A66EFC 100%);
 }
 
 .theme-mint {
   --primary-blue: #00D4AA;
   --secondary-violet: #4ECDC4;
   --bg-gradient: linear-gradient(180deg, #1A2F1A, #0F1F0F);
+  --balance-card-bg: linear-gradient(135deg, #00D4AA 0%, #4ECDC4 100%);
 }
 
 .theme-sunset {
   --primary-blue: #FF6B6B;
   --secondary-violet: #FF8E53;
   --bg-gradient: linear-gradient(180deg, #2F1E1E, #1F0F0F);
+  --balance-card-bg: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
 }
