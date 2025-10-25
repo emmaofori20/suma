@@ -75,6 +75,7 @@ export class SettingsPage implements OnInit {
   isSyncing = false;
   
   budget: Budget | null = null;
+  budgetEnabled = false;
   budgetSpending = {
     spent: 0,
     budget: 0,
@@ -138,6 +139,7 @@ export class SettingsPage implements OnInit {
     this.originalSettings = { ...this.settings };
     this.syncStatus = await this.syncService.getSyncStatus();
     this.budget = await this.budgetService.getBudget();
+    this.budgetEnabled = this.budget !== null;
     if (this.budget) {
       this.budgetSpending = await this.budgetService.getCurrentPeriodSpending();
     }
@@ -213,7 +215,12 @@ export class SettingsPage implements OnInit {
   }
 
 triggerFileInput() {
-  this.fileInput.nativeElement.click();
+  console.log('Triggering file input...');
+  if (this.fileInput && this.fileInput.nativeElement) {
+    this.fileInput.nativeElement.click();
+  } else {
+    console.error('File input element not found');
+  }
 }
 
 
@@ -250,10 +257,24 @@ triggerFileInput() {
   async importJSON(event: any) {
     try {
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file) {
+        console.log('No file selected');
+        return;
+      }
+
+      console.log('Selected file:', file.name, 'Type:', file.type, 'Size:', file.size);
+
+      // Check file type
+      if (!file.name.endsWith('.json') && file.type !== 'application/json') {
+        alert('Please select a valid JSON file');
+        return;
+      }
 
       const text = await file.text();
+      console.log('File content length:', text.length);
+      
       const appState: AppState = JSON.parse(text);
+      console.log('Parsed JSON:', appState);
       
       await this.storageService.importFromJSON(appState);
       await this.loadSettings();
@@ -261,11 +282,19 @@ triggerFileInput() {
       // Apply theme
       await this.themeService.setTheme(this.settings.theme);
       
+      alert('Backup imported successfully!');
+      
       // Reset file input
       event.target.value = '';
     } catch (error) {
       console.error('Error importing JSON:', error);
-      alert('Invalid backup file format');
+      if (error instanceof SyntaxError) {
+        alert('Invalid JSON format. Please check the file and try again.');
+      } else if (error instanceof Error && error.message === 'Invalid backup file format') {
+        alert('Invalid backup file format. Please use a valid Suma backup file.');
+      } else {
+        alert('Failed to import backup. Please try again.');
+      }
     }
   }
 
@@ -314,6 +343,20 @@ triggerFileInput() {
     return date.toLocaleString();
   }
 
+  async toggleBudget() {
+    if (this.budgetEnabled && !this.budget) {
+      // Create a new budget with default values
+      this.budget = {
+        period: 'monthly',
+        amount: 1000,
+        warnAtPct: 0.8
+      };
+      await this.saveBudget();
+    } else if (!this.budgetEnabled && this.budget) {
+      await this.deleteBudget();
+    }
+  }
+
   async saveBudget() {
     if (this.budget) {
       await this.budgetService.setBudget(this.budget);
@@ -323,6 +366,7 @@ triggerFileInput() {
 
   async deleteBudget() {
     this.budget = null;
+    this.budgetEnabled = false;
     const settings = await this.storageService.getSettings();
     settings.budget = undefined;
     settings.updatedAt = Date.now();

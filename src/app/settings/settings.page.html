@@ -250,13 +250,13 @@
       <div class="card-content">
         <ion-item class="modern-input">
           <ion-label>Enable Budget</ion-label>
-          <ion-toggle [(ngModel)]="budget" (ionChange)="budget ? null : deleteBudget()"></ion-toggle>
+          <ion-toggle [(ngModel)]="budgetEnabled" (ionChange)="toggleBudget()" name="budgetToggle"></ion-toggle>
         </ion-item>
         
         <div *ngIf="budget" class="budget-settings">
           <ion-item class="modern-input">
             <ion-label position="stacked">Budget Period</ion-label>
-            <ion-select [(ngModel)]="budget.period" (ionChange)="saveBudget()">
+            <ion-select [(ngModel)]="budget.period" (ionChange)="saveBudget()" name="budgetPeriod">
               <ion-select-option value="weekly">Weekly</ion-select-option>
               <ion-select-option value="monthly">Monthly</ion-select-option>
             </ion-select>
@@ -268,6 +268,7 @@
               type="number" 
               [(ngModel)]="budget.amount" 
               (ionInput)="saveBudget()"
+              name="budgetAmount"
               placeholder="Enter budget amount">
             </ion-input>
           </ion-item>
@@ -279,7 +280,8 @@
               max="100" 
               step="5" 
               [(ngModel)]="budget.warnAtPct" 
-              (ionChange)="saveBudget()">
+              (ionChange)="saveBudget()"
+              name="budgetWarningThreshold">
               <ion-label slot="start">60%</ion-label>
               <ion-label slot="end">100%</ion-label>
             </ion-range>
@@ -386,7 +388,7 @@
 <input
   type="file"
   id="import-file"
-  accept=".json"
+  accept=".json,application/json"
   #fileInput
   (change)="importJSON($event)"
   hidden
