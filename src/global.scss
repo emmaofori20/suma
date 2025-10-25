@@ -169,6 +169,7 @@ body {
 .fab-gradient {
   background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
   box-shadow: 0 8px 25px rgba(76, 124, 243, 0.4);
+  border-radius: 50%;
 }
 
 .fab-gradient:hover {
@@ -239,6 +240,7 @@ ion-button {
 ion-fab-button {
   --background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
   --box-shadow: 0 8px 25px rgba(76, 124, 243, 0.4);
+  --border-radius: 50%;
 }
 
 /* Theme Classes */
