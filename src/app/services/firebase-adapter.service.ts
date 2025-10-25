@@ -34,12 +34,12 @@ export class FirebaseAdapterService implements SyncProvider {
     // Initialize Firebase (you'll need to add your config)
     const firebaseConfig = {
       // Add your Firebase config here
-      apiKey: "your-api-key",
-      authDomain: "your-project.firebaseapp.com",
+      apiKey: "AIzaSyBjNUu2YMp5NDYASTD5Fgu3dIe6IQls6p0",
+      authDomain: "suma-a3803.firebaseapp.com",
       projectId: "suma-a3803",
-      storageBucket: "your-project.appspot.com",
-      messagingSenderId: "123456789",
-      appId: "1:718099556521:android:66d474fc2608ef2c4261b8"
+      storageBucket: "suma-a3803.firebasestorage.app",
+      messagingSenderId: "718099556521",
+      appId: "1:718099556521:web:a887c89d5ea4c8fd4261b8"
     };
 
     const app = initializeApp(firebaseConfig);
