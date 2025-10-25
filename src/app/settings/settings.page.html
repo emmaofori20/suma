@@ -147,7 +147,7 @@
         <ion-item class="modern-input" *ngIf="settings.dailyReminder">
           <ion-label position="stacked" (click)="openReminderPopover()">Reminder Time</ion-label>
           <ion-datetime-button datetime="reminder-datetime" button (click)="openReminderPopover()">
-            <span slot="date-target">{{ settings?.reminderTime || '20:00' }}</span>
+            <span slot="date-target">{{ settings.reminderTime || '20:00' }}</span>
           </ion-datetime-button>
           
           <ion-popover #reminderPopover>

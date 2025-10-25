@@ -48,21 +48,15 @@ import { addIcons } from 'ionicons';
     IonItem,
     IonLabel,
     IonInput,
-    IonList,
-    IonCard,
-    IonCardContent,
     IonIcon,
     IonFab,
     IonFabButton,
     IonModal,
     IonButtons,
-    IonBackButton,
     IonTextarea,
     IonSelect,
     IonSelectOption,
-    IonDatetime,
-    IonDatetimeButton,
-    IonPopover
+    
   ]
 })
 export class HomePage implements OnInit {

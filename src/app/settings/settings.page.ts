@@ -21,7 +21,7 @@ import {
   IonDatetime,
   IonDatetimeButton,
   IonPopover, IonProgressBar } from '@ionic/angular/standalone';
-import { arrowBack, save, download, notifications, checkmark, refresh, cloudDownload, colorPalette, informationCircle, cash, calendar } from 'ionicons/icons';
+import { arrowBack, save, download, notifications, checkmark, refresh, cloudDownload, colorPalette, informationCircle, cash, calendar, lockClosed } from 'ionicons/icons';
 import { StorageService } from '../services/storage.service';
 import { Settings, AppState, Budget } from '../models/entry.model';
 import { Router } from '@angular/router';
@@ -126,7 +126,7 @@ export class SettingsPage implements OnInit {
     private budgetService: BudgetService,
     private appLockService: AppLockService
   ) {
-    addIcons({ arrowBack, save, download, notifications, checkmark, refresh, cloudDownload, colorPalette, informationCircle, calendar, cash });
+    addIcons({arrowBack,save,cash,calendar,informationCircle,colorPalette,notifications,lockClosed,checkmark,cloudDownload,refresh,download});
   }
 
   async ngOnInit() {
