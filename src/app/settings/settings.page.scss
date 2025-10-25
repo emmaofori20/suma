@@ -1,0 +1,277 @@
+/* Modern Settings Page Styles */
+.container {
+  padding: 20px;
+  max-width: 100%;
+}
+
+.settings-content {
+  --background: transparent;
+}
+
+/* Settings Cards */
+.settings-card {
+  margin-bottom: 20px;
+  padding: 24px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.settings-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  
+  &.currency-icon {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
+    color: white;
+  }
+  
+  &.week-icon {
+    background: linear-gradient(135deg, var(--ion-color-success), #00B894);
+    color: white;
+  }
+  
+  &.app-icon {
+    background: linear-gradient(135deg, var(--ion-color-warning), #FDCB6E);
+    color: white;
+  }
+  
+  &.reset-icon {
+    background: linear-gradient(135deg, var(--ion-color-danger), #E17055);
+    color: white;
+  }
+  
+  &.theme-icon {
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    color: white;
+  }
+  
+  &.notification-icon {
+    background: linear-gradient(135deg, #4ECDC4, #44A08D);
+    color: white;
+  }
+  
+  &.backup-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
+}
+
+.card-title-section {
+  flex: 1;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.card-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card-content {
+  margin-top: 16px;
+}
+
+/* Modern Input Styles */
+.modern-input {
+  --background: rgba(255, 255, 255, 0.05);
+  --border-radius: 12px;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.modern-select {
+  --color: var(--text-primary);
+  font-size: 1rem;
+}
+
+/* App Description */
+.app-description {
+  margin-bottom: 20px;
+  
+  p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+/* App Info */
+.app-info {
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.info-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  background: rgba(76, 124, 243, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(76, 124, 243, 0.2);
+}
+
+/* Reset Button */
+.reset-button {
+  --border-color: var(--ion-color-warning);
+  --color: var(--ion-color-warning);
+  --background: rgba(255, 193, 7, 0.1);
+  font-weight: 600;
+  height: 48px;
+}
+
+/* Save Section */
+.save-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(76, 124, 243, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.save-changes-button {
+  height: 48px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Header Styles */
+.header-button {
+  --color: var(--text-primary);
+  --background: rgba(255, 255, 255, 0.1);
+  --border-radius: 8px;
+  margin-left: 8px;
+}
+
+.save-button {
+  --color: var(--text-primary);
+  --background: rgba(76, 124, 243, 0.1);
+  --border-radius: 8px;
+  margin-left: 8px;
+  
+  &[disabled] {
+    --color: var(--text-secondary);
+    --background: rgba(255, 255, 255, 0.05);
+    opacity: 0.5;
+  }
+}
+
+/* Backup Actions */
+.backup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.backup-button {
+  --border-color: var(--primary-blue);
+  --color: var(--primary-blue);
+  --background: rgba(76, 124, 243, 0.1);
+  font-weight: 600;
+  height: 48px;
+}
+
+/* Toggle Styles */
+ion-toggle {
+  --background: rgba(255, 255, 255, 0.1);
+  --background-checked: var(--primary-blue);
+  --handle-background: white;
+  --handle-background-checked: white;
+}
+
+/* Datetime Button */
+ion-datetime-button {
+  --background: rgba(255, 255, 255, 0.05);
+  --border-radius: 8px;
+  --color: var(--text-primary);
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+  
+  .settings-card {
+    padding: 20px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-card {
+    padding: 16px;
+  }
+  
+  .card-title {
+    font-size: 1.1rem;
+  }
+  
+  .card-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .backup-actions {
+    gap: 8px;
+  }
+}

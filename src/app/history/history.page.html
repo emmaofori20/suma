@@ -1,0 +1,129 @@
+<ion-header [translucent]="true" class="modern-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="header-button">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="gradient-text">Transaction History</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="exportCSV()" class="header-button">
+        <ion-icon name="download"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="history-content">
+  <div class="container fade-in">
+    <!-- Summary Cards -->
+    <div class="summary-grid slide-up">
+      <div class="summary-card modern-card income-card">
+        <div class="card-icon income-icon">
+          <ion-icon name="trending-up"></ion-icon>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Income</h3>
+          <div class="card-amount positive">{{ formatAmount(totalIncome) }}</div>
+        </div>
+      </div>
+      
+      <div class="summary-card modern-card expense-card">
+        <div class="card-icon expense-icon">
+          <ion-icon name="trending-down"></ion-icon>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Expenses</h3>
+          <div class="card-amount negative">{{ formatAmount(totalExpense) }}</div>
+        </div>
+      </div>
+      
+      <div class="summary-card modern-card net-card">
+        <div class="card-icon net-icon">
+          <ion-icon name="wallet"></ion-icon>
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Net Total</h3>
+          <div class="card-amount" [class.positive]="netTotal >= 0" [class.negative]="netTotal < 0">
+            {{ formatAmount(netTotal) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section modern-card slide-up">
+      <h3 class="filters-title">Filter Transactions</h3>
+      
+      <div class="filter-group">
+        <label class="filter-label">Transaction Type</label>
+        <ion-segment [(ngModel)]="filterType" (ionChange)="onFilterTypeChange()" class="modern-segment">
+          <ion-segment-button value="all">
+            <ion-label>All</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="income">
+            <ion-label>💰 Income</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="expense">
+            <ion-label>💸 Expenses</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Time Period</label>
+        <ion-segment [(ngModel)]="filterPeriod" (ionChange)="onFilterPeriodChange()" class="modern-segment">
+          <ion-segment-button value="all">
+            <ion-label>All Time</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="week">
+            <ion-label>Week</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="month">
+            <ion-label>Month</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="year">
+            <ion-label>Year</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="transactions-section">
+      <div class="section-header">
+        <h3 class="section-title">Transactions</h3>
+        <div class="transaction-count">{{ filteredEntries.length }} entries</div>
+      </div>
+
+      <div class="transactions-list">
+        <div *ngFor="let entry of filteredEntries; let i = index" 
+             class="transaction-item modern-card slide-up" 
+             [style.animation-delay]="(i * 0.05) + 's'">
+          <div class="transaction-icon" [class.income]="getEntryType(entry.amount) === 'income'" 
+               [class.expense]="getEntryType(entry.amount) === 'expense'">
+            <ion-icon [name]="getEntryType(entry.amount) === 'income' ? 'trending-up' : 'trending-down'"></ion-icon>
+          </div>
+          <div class="transaction-details">
+            <div class="transaction-amount" [class.income]="getEntryType(entry.amount) === 'income'" 
+                 [class.expense]="getEntryType(entry.amount) === 'expense'">
+              {{ formatAmount(entry.amount) }}
+            </div>
+            <div class="transaction-note" *ngIf="entry.note">{{ entry.note }}</div>
+            <div class="transaction-date">
+              {{ formatDate(entry.ts) }} • {{ formatTime(entry.ts) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="filteredEntries.length === 0" class="empty-state">
+        <div class="empty-icon">
+          <ion-icon name="document-text"></ion-icon>
+        </div>
+        <h3>No transactions found</h3>
+        <p>Try adjusting your filters or add some transactions</p>
+      </div>
+    </div>
+  </div>
+</ion-content>

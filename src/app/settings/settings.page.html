@@ -1,0 +1,243 @@
+<ion-header [translucent]="true" class="modern-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="header-button">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="gradient-text">Settings</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveSettings()" [disabled]="!hasChanges()" class="save-button">
+        <ion-icon name="save"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="settings-content">
+  <div class="container fade-in">
+    <!-- Currency Settings -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon currency-icon">
+          <ion-icon name="cash"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Currency</h2>
+          <p class="card-subtitle">Choose your preferred currency symbol</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label position="stacked">Currency Symbol</ion-label>
+          <ion-select [(ngModel)]="settings.currency" placeholder="Select currency" class="modern-select">
+            <ion-select-option *ngFor="let option of currencyOptions" [value]="option.value">
+              {{ option.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Week Settings -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon week-icon">
+          <ion-icon name="calendar"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Week Settings</h2>
+          <p class="card-subtitle">Choose which day your week starts on</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label position="stacked">Week Starts On</ion-label>
+          <ion-select [(ngModel)]="settings.weekStartsOn" placeholder="Select day" class="modern-select">
+            <ion-select-option *ngFor="let option of weekStartOptions" [value]="option.value">
+              {{ option.label }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- App Info -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon app-icon">
+          <ion-icon name="information-circle"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">About Suma</h2>
+          <p class="card-subtitle">Your personal finance companion</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <div class="app-description">
+          <p>Suma is a simple, offline-first cash tracker designed for quick income and expense management. Built with modern web technologies for a smooth user experience.</p>
+        </div>
+        
+        <div class="app-info">
+          <div class="info-item">
+            <span class="info-label">Version</span>
+            <span class="info-value">1.0.0</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Platform</span>
+            <span class="info-value">Ionic Angular</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Storage</span>
+            <span class="info-value">Offline (Capacitor)</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Design</span>
+            <span class="info-value">Modern Dashboard</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme Settings -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon theme-icon">
+          <ion-icon name="color-palette"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Theme</h2>
+          <p class="card-subtitle">Choose your preferred color scheme</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label position="stacked">Theme Preset</ion-label>
+          <ion-select [(ngModel)]="settings.theme" (ionChange)="onThemeChange()" placeholder="Select theme" class="modern-select">
+            <ion-select-option *ngFor="let option of themeOptions" [value]="option.value">
+              {{ option.label }} - {{ option.description }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Notifications Settings -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon notification-icon">
+          <ion-icon name="notifications"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Daily Reminders</h2>
+          <p class="card-subtitle">Get reminded to log your expenses</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-item class="modern-input">
+          <ion-label>Enable Daily Reminder</ion-label>
+          <ion-toggle [(ngModel)]="settings.dailyReminder" (ionChange)="onReminderToggle()"></ion-toggle>
+        </ion-item>
+        
+        <ion-item class="modern-input" *ngIf="settings.dailyReminder">
+          <ion-label position="stacked" (click)="openReminderPopover()">Reminder Time</ion-label>
+          <ion-datetime-button datetime="reminder-datetime" button (click)="openReminderPopover()">
+            <span slot="date-target">{{ settings?.reminderTime || '20:00' }}</span>
+          </ion-datetime-button>
+          
+          <ion-popover #reminderPopover>
+            <ng-template>
+              <ion-datetime 
+                id="reminder-datetime"
+                [(ngModel)]="settings.reminderTime"
+                (ionChange)="onReminderTimeChange()"
+                presentation="time"
+                [showDefaultButtons]="true"
+                [showClearButton]="false">
+              </ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Backup & Restore -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon backup-icon">
+          <ion-icon name="cloud-download"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Backup & Restore</h2>
+          <p class="card-subtitle">Export and import your data</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <div class="backup-actions">
+          <ion-button expand="block" fill="outline" class="backup-button" (click)="exportJSON()">
+            <ion-icon name="download" slot="start"></ion-icon>
+            Export JSON Backup
+          </ion-button>
+          
+          <ion-button expand="block" fill="outline" class="backup-button" (click)="exportCSV()">
+            <ion-icon name="download" slot="start"></ion-icon>
+            Export CSV
+          </ion-button>
+          
+          <ion-button
+  expand="block"
+  fill="outline"
+  class="backup-button"
+  (click)="triggerFileInput()"
+>
+  <ion-icon name="upload" slot="start"></ion-icon>
+  Import JSON Backup
+</ion-button>
+
+<input
+  type="file"
+  id="import-file"
+  accept=".json"
+  #fileInput
+  (change)="importJSON($event)"
+  hidden
+/></div>
+      </div>
+    </div>
+
+    <!-- Reset Settings -->
+    <div class="settings-card modern-card slide-up">
+      <div class="card-header">
+        <div class="card-icon reset-icon">
+          <ion-icon name="refresh"></ion-icon>
+        </div>
+        <div class="card-title-section">
+          <h2 class="card-title">Reset Settings</h2>
+          <p class="card-subtitle">Restore default configuration</p>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <ion-button expand="block" fill="outline" color="warning" class="reset-button" (click)="resetToDefaults()">
+          <ion-icon name="refresh" slot="start"></ion-icon>
+          Reset to Defaults
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Save Changes Button -->
+    <div class="save-section" *ngIf="hasChanges()">
+      <ion-button expand="block" class="gradient-button save-changes-button" (click)="saveSettings()">
+        <ion-icon name="checkmark" slot="start"></ion-icon>
+        Save Changes
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+

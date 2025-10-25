@@ -35,3 +35,226 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Import Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Custom Global Styles for Suma - Modern Finance Dashboard */
+:root {
+  /* Primary Colors */
+  --primary-blue: #4C7CF3;
+  --primary-blue-rgb: 76, 124, 243;
+  --secondary-violet: #A66EFC;
+  --secondary-violet-rgb: 166, 110, 252;
+  
+  /* Background Colors */
+  --bg-gradient: linear-gradient(180deg, #1E1E2F, #121212);
+  --card-bg: #262638;
+  --card-shadow: 0 6px 12px rgba(0,0,0,0.4);
+  
+  /* Text Colors */
+  --text-primary: #EDEDED;
+  --text-secondary: #A3A3A3;
+  
+  /* Ionic Color Overrides */
+  --ion-color-primary: var(--primary-blue);
+  --ion-color-primary-rgb: var(--primary-blue-rgb);
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #3d6bd6;
+  --ion-color-primary-tint: #5e89f5;
+
+  --ion-color-secondary: var(--secondary-violet);
+  --ion-color-secondary-rgb: var(--secondary-violet-rgb);
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #9558de;
+  --ion-color-secondary-tint: #af7efd;
+
+  --ion-color-success: #00D4AA;
+  --ion-color-success-rgb: 0, 212, 170;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #00bb95;
+  --ion-color-success-tint: #1ad8b3;
+
+  --ion-color-danger: #FF6B6B;
+  --ion-color-danger-rgb: 255, 107, 107;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #e25e5e;
+  --ion-color-danger-tint: #ff7a7a;
+
+  /* Background */
+  --ion-background-color: #121212;
+  --ion-background-color-rgb: 18, 18, 18;
+  
+  /* Text */
+  --ion-text-color: var(--text-primary);
+  --ion-text-color-rgb: 237, 237, 237;
+  
+  /* Border */
+  --ion-border-color: #333333;
+  
+  /* Card */
+  --ion-card-background: var(--card-bg);
+  --ion-card-color: var(--text-primary);
+}
+
+/* Global Typography */
+* {
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Body Background */
+body {
+  background: var(--bg-gradient);
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-violet);
+}
+
+/* Custom Card Styles */
+.modern-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gradient Button */
+.gradient-button {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(76, 124, 243, 0.3);
+}
+
+.gradient-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 124, 243, 0.4);
+}
+
+/* Floating Action Button */
+.fab-gradient {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
+  box-shadow: 0 8px 25px rgba(76, 124, 243, 0.4);
+}
+
+.fab-gradient:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px rgba(76, 124, 243, 0.6);
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Ion Components */
+ion-content {
+  --background: transparent;
+}
+
+ion-header {
+  --background: rgba(30, 30, 47, 0.9);
+  --color: var(--text-primary);
+  backdrop-filter: blur(20px);
+}
+
+ion-toolbar {
+  --background: transparent;
+  --color: var(--text-primary);
+}
+
+ion-card {
+  --background: var(--card-bg);
+  --color: var(--text-primary);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+ion-item {
+  --background: transparent;
+  --color: var(--text-primary);
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+ion-button {
+  --border-radius: 15px;
+  font-weight: 600;
+}
+
+ion-fab-button {
+  --background: linear-gradient(135deg, var(--primary-blue), var(--secondary-violet));
+  --box-shadow: 0 8px 25px rgba(76, 124, 243, 0.4);
+}
+
+/* Theme Classes */
+.theme-ocean {
+  --primary-blue: #4C7CF3;
+  --secondary-violet: #A66EFC;
+  --bg-gradient: linear-gradient(180deg, #1E1E2F, #121212);
+}
+
+.theme-mint {
+  --primary-blue: #00D4AA;
+  --secondary-violet: #4ECDC4;
+  --bg-gradient: linear-gradient(180deg, #1A2F1A, #0F1F0F);
+}
+
+.theme-sunset {
+  --primary-blue: #FF6B6B;
+  --secondary-violet: #FF8E53;
+  --bg-gradient: linear-gradient(180deg, #2F1E1E, #1F0F0F);
+}

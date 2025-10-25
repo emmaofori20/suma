@@ -1,20 +1,203 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="modern-header">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title class="gradient-text">Suma</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="navigateToHistory()" class="header-button">
+        <ion-icon name="list"></ion-icon>
+      </ion-button>
+      <ion-button (click)="navigateToInsights()" class="header-button" fill="clear" type="button">
+        <ion-icon name="analytics"></ion-icon>
+      </ion-button>
+      <ion-button (click)="navigateToSettings()" class="header-button">
+        <ion-icon name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <div class="container fade-in">
+    <!-- Balance Header Card -->
+    <div class="balance-card modern-card slide-up">
+      <div class="balance-header">
+        <h2 class="balance-title">Today's Balance</h2>
+        <div class="balance-amount" [class.positive]="totalToday >= 0" [class.negative]="totalToday < 0">
+          {{ formatAmount(totalToday) }}
+        </div>
+        <div class="balance-subtitle">
+          {{ totalToday >= 0 ? 'You\'re in the green!' : 'Track your spending' }}
+        </div>
+      </div>
+      <div class="balance-stats">
+        <div class="stat-item">
+          <div class="stat-value">{{ todayEntries.length }}</div>
+          <div class="stat-label">Transactions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ getIncomeCount() }}</div>
+          <div class="stat-label">Income</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ getExpenseCount() }}</div>
+          <div class="stat-label">Expenses</div>
+        </div>
+      </div>
+    </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <ion-button expand="block" class="gradient-button" (click)="openModal()">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Add Transaction
+      </ion-button>
+    </div>
+
+    <!-- Today's Transactions -->
+    <div class="transactions-section">
+      <div class="section-header">
+        <h3 class="section-title">Today's Transactions</h3>
+        <div class="transaction-count">{{ todayEntries.length }} entries</div>
+      </div>
+
+      <div class="transactions-list">
+        <div *ngFor="let entry of todayEntries; let i = index" 
+             class="transaction-item modern-card slide-up" 
+             [style.animation-delay]="(i * 0.1) + 's'">
+          <div class="transaction-icon" [class.income]="getEntryType(entry.amount) === 'income'" 
+               [class.expense]="getEntryType(entry.amount) === 'expense'">
+            <ion-icon [name]="getEntryType(entry.amount) === 'income' ? 'trending-up' : 'trending-down'"></ion-icon>
+          </div>
+          <div class="transaction-details">
+            <div class="transaction-amount" [class.income]="getEntryType(entry.amount) === 'income'" 
+                 [class.expense]="getEntryType(entry.amount) === 'expense'">
+              {{ formatAmount(entry.amount) }}
+            </div>
+            <div class="transaction-note" *ngIf="entry.note">{{ entry.note }}</div>
+            <div class="transaction-time">{{ formatTime(entry.ts) }}</div>
+          </div>
+          <ion-button fill="clear" color="danger" class="delete-button" (click)="deleteEntry(entry.id)">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+      <div *ngIf="todayEntries.length === 0" class="empty-state">
+        <div class="empty-icon">
+          <ion-icon name="wallet"></ion-icon>
+        </div>
+        <h3>No transactions today</h3>
+        <p>Start tracking your income and expenses</p>
+        <ion-button class="gradient-button" (click)="openModal()">
+          Add First Transaction
+        </ion-button>
+      </div>
+    </div>
   </div>
+
+  <!-- Add Entry Modal -->
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()" class="modern-modal">
+    <ng-template>
+      <ion-header class="modal-header">
+        <ion-toolbar>
+          <ion-title>Add Transaction</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()" class="close-button">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-content">
+        <div class="modal-form">
+          <div class="form-group">
+            <ion-item class="modern-input">
+              <ion-label position="stacked">Transaction Type</ion-label>
+              <ion-select [(ngModel)]="newEntry.type" placeholder="Select type" class="modern-select">
+                <ion-select-option value="income">💰 Income</ion-select-option>
+                <ion-select-option value="expense">💸 Expense</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <div class="form-group">
+            <ion-item class="modern-input">
+              <ion-label position="stacked">Amount</ion-label>
+              <ion-input 
+                type="number" 
+                [(ngModel)]="newEntry.amount" 
+                placeholder="0.00"
+                step="0.01"
+                class="modern-input-field">
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <div class="form-group">
+            <ion-item class="modern-input">
+              <ion-label position="stacked">Note (Optional)</ion-label>
+              <ion-textarea 
+                [(ngModel)]="newEntry.note" 
+                placeholder="Add a description..."
+                rows="3"
+                class="modern-textarea">
+              </ion-textarea>
+            </ion-item>
+          </div>
+
+          <div class="form-group">
+            <ion-item class="modern-input">
+              <ion-label position="stacked">Tags (Optional)</ion-label>
+              <div class="tags-container">
+                <div class="tag-chips">
+                  <div *ngFor="let tag of newEntry.tags" class="tag-chip">
+                    {{ tag }}
+                    <ion-button fill="clear" size="small" (click)="removeTag(tag)">
+                      <ion-icon name="close"></ion-icon>
+                    </ion-button>
+                  </div>
+                </div>
+                
+                <div class="add-tag-section">
+                  <ion-input 
+                    [(ngModel)]="newTag" 
+                    placeholder="Add new tag"
+                    (keyup.enter)="addTag()">
+                  </ion-input>
+                  <ion-button fill="outline" size="small" (click)="addTag()">
+                    Add
+                  </ion-button>
+                </div>
+                
+                <div *ngIf="availableTags.length > 0" class="existing-tags">
+                  <p class="tags-label">Existing tags:</p>
+                  <div class="tag-chips">
+                    <ion-button 
+                      *ngFor="let tag of availableTags" 
+                      fill="outline" 
+                      size="small"
+                      (click)="selectExistingTag(tag)"
+                      [disabled]="newEntry.tags.includes(tag)">
+                      {{ tag }}
+                    </ion-button>
+                  </div>
+                </div>
+              </div>
+            </ion-item>
+          </div>
+
+          <ion-button expand="block" class="gradient-button submit-button" (click)="addEntry()" [disabled]="!newEntry.amount">
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            Add Transaction
+          </ion-button>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openModal()" class="fab-gradient">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

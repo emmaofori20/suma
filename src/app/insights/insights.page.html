@@ -1,0 +1,86 @@
+<ion-header [translucent]="true" class="modern-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="header-button">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="gradient-text">Insights</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="header-button">
+        <ion-icon name="analytics"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="insights-content">
+  <div class="container fade-in">
+    <!-- Filter Controls -->
+    <div class="filter-section modern-card slide-up">
+      <h3 class="filter-title">Time Period</h3>
+      <ion-segment [(ngModel)]="filterPeriod" (ionChange)="onFilterPeriodChange()" class="modern-segment">
+        <ion-segment-button value="week">
+          <ion-label>Week</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="month">
+          <ion-label>Month</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="all">
+          <ion-label>All Time</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Net Flow Chart -->
+    <div class="chart-section modern-card slide-up">
+      <div class="chart-header">
+        <h3 class="chart-title">Daily Net Flow</h3>
+        <p class="chart-subtitle">Income vs Expenses over time</p>
+      </div>
+      <div class="chart-container">
+        <canvas baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Spending by Tag Chart -->
+    <div class="chart-section modern-card slide-up">
+      <div class="chart-header">
+        <h3 class="chart-title">Spending by Category</h3>
+        <p class="chart-subtitle">Breakdown of expenses by tags</p>
+      </div>
+      <div class="chart-container">
+        <canvas baseChart
+                [data]="pieChartData"
+                [options]="pieChartOptions"
+                [type]="pieChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="stats-section modern-card slide-up">
+      <h3 class="stats-title">Summary</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">{{ getTotalIncome() | currency:settings.currency:'symbol':'1.2-2' }}</div>
+          <div class="stat-label">Total Income</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{ getTotalExpenses() | currency:settings.currency:'symbol':'1.2-2' }}</div>
+          <div class="stat-label">Total Expenses</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" [class.positive]="getNetTotal() >= 0" [class.negative]="getNetTotal() < 0">
+            {{ getNetTotal() | currency:settings.currency:'symbol':'1.2-2' }}
+          </div>
+          <div class="stat-label">Net Total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
